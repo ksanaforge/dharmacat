@@ -1,0 +1,7 @@
+module.exports=`Thus have I heard. {2p1a0605-07|At one time} {2p1a0607-08|the Buddha} {2p1a0608-09|was staying} at {2p1a0609-12|Sāvatthī} in {2p1a0612-14|Jeta's Grove}{fn3}, {2p1a0614-0702|Anāthapiṇḍika's Park}. {fn4}
+{2p1a0702-04|At that time} {2p1a0704-06|the Blessed One} said to the monks: "You should contemplate bodily form as impermanent. One who contemplates like this has right insight.{fn5} One who has right insight arouses disenchantment. One who has disenchantment eradicates delight and lust. One who eradicates delight and lust, I say, liberates the mind.{fn6}
+In the same way contemplate feeling ... perception ... formations ... consciousness as impermanent. One who contemplates like this has right insight. {fn7} One who has right insight arouses disenchantment. One who has disenchantment eradicates delight and lust. One who eradicates delight and lust, I say, liberates the mind.
+One who has liberated the mind in this way, monks, if he wishes to declare himself is able to declare of himself: {fn8} 'Birth for me has been eradicated, the holy life has been established, what had to be done has been done, I myself know that there will be no receiving of any further existence.'
+(Just as with contemplating impermanence, in the same way also for dukkha, emptiness and not-self). {fn9}
+Then the monks, hearing what the Buddha had said, were delighted and received it respectfully. {fn10}
+`

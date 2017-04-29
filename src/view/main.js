@@ -2,7 +2,15 @@ const React=require("react");
 const E=React.createElement;
 const CView=require("./cview");
 const TranslationView=require("./translationview");
-const {openCorpus}=require("ksana-corpus-lib");
+
+var openCorpus;
+if (typeof KsanaCorpus!=="undefined") {	
+	openCorpus=KsanaCorpus&&KsanaCorpus.openCorpus;
+} else {
+	const KSANACORPUS="ksana-corpus";
+	openCorpus=require(KSANACORPUS).openCorpus;
+}
+
 const SplitPane=require("react-split-pane");
 
 const styles={

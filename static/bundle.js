@@ -8453,7 +8453,7 @@ var CView = function (_React$Component) {
 		value: function componentDidMount() {
 			setTimeout(function () {
 				this.fetchArticle(this.state.address);
-			}.bind(this), 500);
+			}.bind(this), 2000);
 		}
 	}, {
 		key: "showtext",
@@ -8467,6 +8467,7 @@ var CView = function (_React$Component) {
 
 			address = address || this.state.address;
 			var cor = this.props.cor;
+			if (!cor) return;
 			_fetchArticle(cor, address, {}, function (res) {
 				if (res.article.at !== _this2.state.article.at) {
 					_this2.setState(res);
@@ -8689,8 +8690,13 @@ var E = React.createElement;
 var CView = require("./cview");
 var TranslationView = require("./translationview");
 
-var _require = require("ksana-corpus-lib"),
-    openCorpus = _require.openCorpus;
+var openCorpus;
+if (typeof KsanaCorpus !== "undefined") {
+	openCorpus = KsanaCorpus && KsanaCorpus.openCorpus;
+} else {
+	var KSANACORPUS = "ksana-corpus";
+	openCorpus = require(KSANACORPUS).openCorpus;
+}
 
 var SplitPane = require("react-split-pane");
 
@@ -8740,7 +8746,7 @@ var Main = function (_React$Component) {
 
 module.exports = Main;
 
-},{"./cview":55,"./translationview":59,"ksana-corpus-lib":"ksana-corpus-lib","react":"react","react-split-pane":41}],59:[function(require,module,exports){
+},{"./cview":55,"./translationview":59,"react":"react","react-split-pane":41}],59:[function(require,module,exports){
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -8883,7 +8889,7 @@ var TranslationView = function (_React$Component) {
 		}
 	}, {
 		key: "makelink",
-		value: function makelink() {
+		value: function makelink(e) {
 			var start = caret.store.targetSelection[0];
 			var end = caret.store.targetSelection[1];
 			var payload = this.props.cor.stringify(caret.store.sourceSelectionRange);
@@ -8894,7 +8900,9 @@ var TranslationView = function (_React$Component) {
 		key: "unlink",
 		value: function unlink() {
 			var m = this.cm.findMarksAt(this.cm.getCursor());
-			if (m) m[0].clear();
+			if (m && m[0]) {
+				m[0].clear();
+			}
 			this.clearPopup();
 		}
 	}, {
@@ -8933,11 +8941,14 @@ var TranslationView = function (_React$Component) {
 			if (linkable) {
 				data = caret.store.sourceSelectedText;
 				Popup = LinkWordPopup;
-				action = this.makelink(this);
+				action = this.makelink.bind(this);
 			} else if (insertable && !m) {
 				Popup = InsertWordPopup;
 				data = caret.getCandidate();
 				action = this.insertword.bind(this);
+			} else if (m) {
+				Popup = UnlinkPopup;
+				action = this.unlink.bind(this);
 			}
 
 			if (Popup) {
@@ -8993,7 +9004,7 @@ var styles = {
 		padding: "5px"
 	},
 	container: {
-		top: "-1.5em",
+		top: "-2em",
 		position: "relative",
 		zIndex: 200
 	},
@@ -9202,6 +9213,7 @@ const CorpusView=React.createClass({
 		}
 	}
 	,highlight:function(start,end){
+		if (!this.cm)return;
 		this.clearHighlight();
 		this.highlighmarker=this.cm.markText(start,end,{className:"highlight",clearOnEnter:true});
 	}

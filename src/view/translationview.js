@@ -85,7 +85,7 @@ class TranslationView extends React.Component {
 		this.popup&&this.popup.clear();
 		this.popup=null;
 	}
-	makelink(){
+	makelink(e){
 		const start=caret.store.targetSelection[0];
 		const end=caret.store.targetSelection[1];
 		const payload=this.props.cor.stringify(caret.store.sourceSelectionRange);
@@ -94,7 +94,9 @@ class TranslationView extends React.Component {
 	}
 	unlink(){
 		const m=this.cm.findMarksAt(this.cm.getCursor());
-		if (m) m[0].clear();
+		if (m && m[0]) {
+			m[0].clear();
+		}
 		this.clearPopup();
 	}
 	moveToNextSourceWord(krange){
@@ -125,11 +127,14 @@ class TranslationView extends React.Component {
 		if (linkable){
 			data=caret.store.sourceSelectedText;
 			Popup=LinkWordPopup;
-			action=this.makelink(this);
+			action=this.makelink.bind(this);
 		}else if (insertable && !m) {
 			Popup=InsertWordPopup;
 			data=caret.getCandidate();
 			action=this.insertword.bind(this);
+		} else if (m) {
+			Popup=UnlinkPopup;
+			action=this.unlink.bind(this);
 		}
 
 		if (Popup) {

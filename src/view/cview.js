@@ -22,7 +22,7 @@ class CView extends React.Component {
 	componentDidMount(){
 		setTimeout(function(){
 			this.fetchArticle(this.state.address);
-		}.bind(this),500);
+		}.bind(this),2000);
 	}
 	showtext(){
 		return JSON.stringify(this.props.cor.meta);
@@ -30,6 +30,7 @@ class CView extends React.Component {
 	fetchArticle(address){
 		address=address||this.state.address;
 		const cor=this.props.cor;
+		if (!cor)return;
 		fetchArticle(cor,address,{},res=>{
 			if (res.article.at!==this.state.article.at) {
 				this.setState(res);	

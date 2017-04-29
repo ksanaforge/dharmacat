@@ -1,11 +1,13 @@
 const React=require("react");
 const E=React.createElement;
+const {observer}=require("mobx-react");
 const Codemirror=require("ksana-codemirror").Component;
 const {serialize,deserialize}=require("../unit/serialization");
 //raw input
 //serialized 
 const testdata=require("../testdata/n99");
 const footnotes=require("../testdata/footnotes");
+const caret=require("../model/caret");
 //deserialized
 
 class TranslationView extends React.Component {
@@ -61,13 +63,29 @@ class TranslationView extends React.Component {
 			this.renderMarkups();
 		});
 	}
+	markupAtCursor(cm){
+		const cursor=cm.getCursor();
+		const m=cm.findMarksAt(cursor);
+		if (m.length) {
+			return m[0].payload;
+		}
+	}
+	onCursorActivity(cm){
+		clearTimeout(this.timer);
+		this.timer=setTimeout(()=>{
+			const m=this.markupAtCursor(cm);
+			caret.highlightSourceText(m);
+		},300);
+	}
 	render(){
 		return E("div",{},
 				E("button",{onClick:this.previewMode.bind(this)},"Preview"),
 				E("button",{onClick:this.rawMode.bind(this)},"Raw"),
 				E("span",{},this.state.footnote),
-				E(Codemirror,{ref:this.setCM.bind(this),value:this.state.value,theme:"ambiance"})
+				E(Codemirror,{ref:this.setCM.bind(this),
+					onCursorActivity:this.onCursorActivity.bind(this),
+					value:this.state.value,theme:"ambiance"})
 			);
 	}
 }
-module.exports=TranslationView;
+module.exports=observer(TranslationView);

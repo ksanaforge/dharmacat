@@ -25,6 +25,7 @@ class Main extends React.Component {
 	}
 	render(){
 		return E("div",{},
+
 			E(SplitPane,{split:"vertical",minSize:200,
 				defaultSize:800,
 				style:{paddingBottom:"2em"}, //need this because splitPanel set height to 100%

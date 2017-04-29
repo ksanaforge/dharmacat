@@ -19,6 +19,11 @@ class CView extends React.Component {
 		this.state={address:caret.store.sourceAddress,
 			article:{},rawlines:[],selection:0};
 	}
+	componentDidMount(){
+		setTimeout(function(){
+			this.fetchArticle(this.state.address);
+		}.bind(this),500);
+	}
 	showtext(){
 		return JSON.stringify(this.props.cor.meta);
 	}
@@ -29,44 +34,42 @@ class CView extends React.Component {
 			if (res.article.at!==this.state.article.at) {
 				this.setState(res);	
 			}
-			if (this.state.address!=address) this.setState({address});
 		});
 	}
 	setAddress(e){
 		this.setState({address:e.target.value});
 	}
-	setSelection({selectionText,corpus,caretText,ranges}) {
-		this.setState({selection:ranges[0]});
+	setSelection({cm,selections,selectionText,corpus,caretTexts,ranges}) {
+		caret.setSourceRange(ranges[0]);
+		caret.setSourceSelection(selections,selectionText,caretTexts);
+		this.setState({selection:ranges[0]})
 	}
 	inputkeypress(e){
 		if (e.key=="Enter"){
-			this.fetchArticle();
+			this.fetchArticle(this.state.address);
 		}
 	}
 	render (){
-		
 		if (!this.props.cor) {
 			return E("div",{},"cor not opened");
 		}
 		
-		if (this.state.address!==caret.store.sourceAddress) {
-			this.fetchArticle(caret.store.sourceAddress);
-		}
 		const range=this.props.cor.stringify(this.state.selection);
 
 		return E("div",{},
-			E("input",{value:this.state.address,onChange:this.setAddress.bind(this)
+			E("input",{value:this.state.address,
+				onChange:this.setAddress.bind(this)
 				,onKeyPress:this.inputkeypress.bind(this)}),
-			E("button",{onClick:this.fetchArticle.bind(this)},"fetch"),
 			E("span",{},range),
 			E(CorpusView,{
 				cor:this.props.cor,
 				decorators,
+				hlAddress:caret.store.sourceHightlightAddress,
 				fields:this.state.fields,
 				setSelection:this.setSelection.bind(this),
 				article:this.state.article,
 				rawlines:this.state.rawlines,
-				address:this.state.address
+				address:caret.store.sourceAddress
 			})
 		);
 	}

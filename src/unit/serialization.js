@@ -6,25 +6,34 @@ const serialize=function(cm){
 		const cmmark=cmmarks[i];
 		const linech=cmmark.find();
 		if (linech.from) {
-			const from=cm.indexFromPos(linech.from);
-			const to=cm.indexFromPos(linech.to);
-			marks.push([from,to, cmmark.payload ] );			
+			if (cmmark.className=="source") {
+				const from=cm.indexFromPos(linech.from);
+				const to=cm.indexFromPos(linech.to);
+				marks.push([from,to, cmmark.payload ] );							
+			}
 		} else {
 			const from=cm.indexFromPos(linech);
-			marks.push([from,from,cmmark.replacedWith.dataset.payload]);
+			const w=cmmark.replacedWith;
+			if (!w)continue;
+			if (w.className=="footnote") {
+				marks.push([from,from,w.dataset.payload]);
+			}
 		}
 	}
-
+	marks.sort(function(a,b){
+		return a[0]-b[0];
+	})
+	
 	const text=cm.getValue();
 	var now=0;
 	for (var i=0;i<text.length;i++) {
 
-		if (i==marks[now][1] && i>marks[now][0]) { //close tag
+		if (now<marks.length && i==marks[now][1] && i>marks[now][0]) { //close tag
 			out+="}";
 			now++;
 		}
 
-		if (i==marks[now][0]) {
+		if (now<marks.length&&i==marks[now][0]) {
 			out+= "{"+marks[now][2];
 			if (marks[now][2].substr(0,2)=="fn")  {
 				out+="}";

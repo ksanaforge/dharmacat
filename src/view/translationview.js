@@ -8,12 +8,10 @@ const LinkWordPopup=require("./linkwordpopup");
 const InsertWordPopup=require("./insertwordpopup");
 const UnlinkPopup=require("./unlinkpopup");
 const selection=require("../unit/selection");
-//serialized 
+
 const testdata=require("../testdata/n99");
 const footnotes=require("../testdata/footnotes");
-
 const caret=require("../model/caret");
-//deserialized
 
 class TranslationView extends React.Component {
 	constructor(props){
@@ -119,6 +117,7 @@ class TranslationView extends React.Component {
 	}
 	showPopup(){
 		this.clearPopup();
+		if (this.state.rawmode)return;
 		const linkable=caret.isLinkable();
 		const m=this.sourcePosAtCursor(this.cm);
 		const insertable=caret.isInsertable();
@@ -135,14 +134,11 @@ class TranslationView extends React.Component {
 
 		if (Popup) {
 			const cursor=caret.store.targetSelection[0];
-
 			const widget=document.createElement("span");
 			ReactDOM.render(E(Popup,{action,data}),widget);
 			this.popup=this.cm.setBookmark(cursor,{widget});
 		}
-		
 	}
-
 	onCursorActivity(cm){
 		clearTimeout(this.timer);
 		this.timer=setTimeout(()=>{
